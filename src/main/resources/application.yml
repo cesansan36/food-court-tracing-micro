@@ -8,7 +8,6 @@ spring:
       port: ${mongo_port}
       database: ${mongo_database}
 
-
 application:
   security:
     jwt:

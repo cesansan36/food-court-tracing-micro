@@ -61,19 +61,4 @@ public class OrderRecord {
     public String getEmployeeEmail() {
         return employeeEmail;
     }
-
-    @Override
-    public String toString() {
-        return "OrderRecord{" +
-                "id=" + id +
-                ", idOrder=" + idOrder +
-                ", idClient=" + idClient +
-                ", clientEmail='" + clientEmail + '\'' +
-                ", createdAt=" + createdAt +
-                ", previousState='" + previousState + '\'' +
-                ", newState='" + newState + '\'' +
-                ", idEmployee=" + idEmployee +
-                ", employeeEmail='" + employeeEmail + '\'' +
-                '}';
-    }
 }

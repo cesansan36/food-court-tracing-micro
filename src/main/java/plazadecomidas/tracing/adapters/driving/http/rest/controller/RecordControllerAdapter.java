@@ -30,7 +30,9 @@ public class RecordControllerAdapter {
     @PostMapping("/create")
     public ResponseEntity<RecordResponse> create(@RequestBody AddRecordRequest request) {
 
-        RecordResponse response = recordResponseMapper.recordToRecordResponse(recordPrimaryPort.saveRecord(addRecordRequestMapper.addRequestToRecord(request)));
+        RecordResponse response = recordResponseMapper.recordToRecordResponse(
+                recordPrimaryPort.saveRecord(
+                        addRecordRequestMapper.addRequestToRecord(request)));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

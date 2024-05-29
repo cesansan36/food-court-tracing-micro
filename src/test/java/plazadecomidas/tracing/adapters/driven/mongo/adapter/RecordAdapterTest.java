@@ -3,6 +3,7 @@ package plazadecomidas.tracing.adapters.driven.mongo.adapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import plazadecomidas.tracing.adapters.driven.mongo.entity.RecordEntity;
+import plazadecomidas.tracing.adapters.driven.mongo.exception.DocumentNotFoundException;
 import plazadecomidas.tracing.adapters.driven.mongo.mapper.IRecordEntityMapper;
 import plazadecomidas.tracing.adapters.driven.mongo.repository.IRecordRepository;
 import plazadecomidas.tracing.domain.model.OrderRecord;
@@ -14,6 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -72,6 +74,40 @@ class RecordAdapterTest {
             () -> assertEquals(orderRecord, records.getFirst()),
             () -> verify(recordRepository, times(1)).findByClientIdOrderByCreatedAtDesc(id),
             () -> verify(recordEntityMapper, times(1)).recordEntityListToRecordList(anyList())
+        );
+    }
+
+    @Test
+    void findByIdOrderAndStatusSuccess() {
+        Long orderId = 1L;
+        String currentState = "PENDING";
+        OrderRecord orderRecord = TestDataDomain.orderRecord(1L);
+        RecordEntity recordEntity = TestDataPersistence.getRecordEntity(1L);
+
+        when(recordRepository.findOneByOrderAndState(orderId, currentState)).thenReturn(recordEntity);
+        when(recordEntityMapper.recordEntityToRecord(recordEntity)).thenReturn(orderRecord);
+
+        OrderRecord record = recordAdapter.findByIdOrderAndStatus(orderId, currentState);
+
+        assertAll(
+            () -> assertNotNull(record),
+            () -> assertEquals(orderRecord, record),
+            () -> verify(recordRepository, times(1)).findOneByOrderAndState(orderId, currentState),
+            () -> verify(recordEntityMapper, times(1)).recordEntityToRecord(recordEntity)
+        );
+    }
+
+    @Test
+    void findByIdOrderAndStatusFailBecauseNotFound() {
+        Long orderId = 1L;
+        String currentState = "PENDING";
+
+        when(recordRepository.findOneByOrderAndState(orderId, currentState)).thenReturn(null);
+
+        assertAll(
+            () -> assertThrows(DocumentNotFoundException.class, () -> recordAdapter.findByIdOrderAndStatus(orderId, currentState)),
+            () -> verify(recordRepository, times(1)).findOneByOrderAndState(orderId, currentState),
+            () -> verify(recordEntityMapper, times(0)).recordEntityToRecord(null)
         );
     }
 }

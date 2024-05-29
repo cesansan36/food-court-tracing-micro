@@ -10,6 +10,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -69,6 +71,25 @@ class RecordUseCaseTest {
                 () -> assertEquals(record.getIdEmployee(), response.getFirst().getIdEmployee()),
                 () -> assertEquals(record.getEmployeeEmail(), response.getFirst().getEmployeeEmail()),
                 () -> verify(recordPersistencePort, times(1)).findByClientIdOrderByCreatedAtDesc(record.getIdClient())
+        );
+    }
+
+    @Test
+    void findByIdOrderAndStatus() {
+        Long orderId = 1L;
+        String currentState = "PENDING";
+        String newState = "PREPARING";
+        OrderRecord orderRecord = TestDataDomain.orderRecord(1L);
+
+        when(recordPersistencePort.findByIdOrderAndStatus(anyLong(), anyString())).thenReturn(orderRecord);
+
+        OrderRecord response = recordUseCase.findByIdOrderAndStatus(orderId, currentState);
+
+        assertAll(
+                () -> assertEquals(orderId, response.getIdOrder()),
+                () -> assertEquals(currentState, response.getPreviousState()),
+                () -> assertEquals(newState, response.getNewState()),
+                () -> verify(recordPersistencePort, times(1)).findByIdOrderAndStatus(orderId, currentState)
         );
     }
 }

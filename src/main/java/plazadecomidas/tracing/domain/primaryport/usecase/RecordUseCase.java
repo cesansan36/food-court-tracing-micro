@@ -23,4 +23,9 @@ public class RecordUseCase implements IRecordPrimaryPort {
     public List<OrderRecord> findByClientIdOrderByCreatedAtDesc(Long id) {
         return recordPersistencePort.findByClientIdOrderByCreatedAtDesc(id);
     }
+
+    @Override
+    public OrderRecord findByIdOrderAndStatus(Long orderId, String currentState) {
+        return recordPersistencePort.findByIdOrderAndStatus(orderId, currentState);
+    }
 }

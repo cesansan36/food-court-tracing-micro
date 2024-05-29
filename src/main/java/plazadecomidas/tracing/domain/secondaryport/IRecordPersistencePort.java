@@ -8,4 +8,6 @@ public interface IRecordPersistencePort {
     OrderRecord saveRecord(OrderRecord orderRecord);
 
     List<OrderRecord> findByClientIdOrderByCreatedAtDesc(Long clientId);
+
+    OrderRecord findByIdOrderAndStatus(Long orderId, String currentState);
 }

@@ -10,4 +10,7 @@ public interface IRecordRepository extends MongoRepository<RecordEntity, Long> {
 
     @Query("{ 'idClient' : ?0 }.")
     List<RecordEntity> findByClientIdOrderByCreatedAtDesc(Long clientId);
+
+    @Query("{'idOrder': ?0, 'newState': ?1}")
+    RecordEntity findOneByOrderAndState(Long idOrder, String newState);
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import plazadecomidas.tracing.adapters.driving.http.rest.dto.request.AddRecordRequest;
 import plazadecomidas.tracing.adapters.driving.http.rest.dto.response.RecordResponse;
@@ -64,9 +65,9 @@ public class RecordControllerAdapter {
     }
 
     @GetMapping("get-order")
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('CLIENT')")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<RecordResponse> getOrder(Long orderId, String currentState) {
+    public ResponseEntity<RecordResponse> getOrder(@RequestParam Long orderId, @RequestParam String currentState) {
 
         RecordResponse response = recordResponseMapper.recordToRecordResponse(
                 recordPrimaryPort.findByIdOrderAndStatus(orderId, currentState));

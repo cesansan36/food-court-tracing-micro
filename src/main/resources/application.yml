@@ -1,0 +1,16 @@
+server:
+  port: 8190
+
+spring:
+  data:
+    mongodb:
+      host: ${mongo_host}
+      port: ${mongo_port}
+      database: ${mongo_database}
+
+application:
+  security:
+    jwt:
+      secret: ${secret}
+      expiration: 604800000
+      user-generator: ${user_generator}
